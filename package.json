@@ -1,0 +1,24 @@
+{
+  "name": "best-gif",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulZuk/best-gif.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paulZuk/best-gif/issues"
+  },
+  "homepage": "https://github.com/paulZuk/best-gif#readme",
+  "dependencies": {
+    "@slack/events-api": "^2.3.0",
+    "@slack/web-api": "^5.1.0",
+    "express": "^4.17.1"
+  }
+}
