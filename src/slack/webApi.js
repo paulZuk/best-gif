@@ -1,7 +1,6 @@
 const { WebClient } = require('@slack/web-api');
-const token = process.env.SLACK_TOKEN;
 
-class SlackWebClient {
+class SlackWeb {
     constructor(config) {
         this.web = new WebClient(config.token);
     }
@@ -30,4 +29,4 @@ class SlackWebClient {
     };
 }
 
-module.exports = SlackWebClient;
+module.exports = SlackWeb;

@@ -22,12 +22,6 @@ class MondoClient {
             callback(this.dataBase);
         });
     }
-    getCollection(collectionName) {
-        return this.dataBase
-            .collection(collectionName)
-            .find()
-            .toArray();
-    }
     add(collectionName, objectOrArray) {
         this.dataBase.collection(collectionName, (err, coll) => {
 
@@ -35,8 +29,25 @@ class MondoClient {
                 coll.insertMany(objectOrArray);
                 return;
             }
-            
-            coll.insertOne(objectOrArray);
+
+            coll.insertOne(objectOrArray, (err, res) => {
+                console.log('Added to database');
+            });
+        });
+    }
+    update(collectionName, query, updatedData) {
+        this.dataBase.collection(collectionName, (err, coll) => {
+            coll.updateOne(query, updatedData, (err, res) => {
+                console.log(`Data updated ${res}`)
+            });
+        });
+    }
+    find(collectionName, query, callback) {
+        this.dataBase.collection(collectionName)
+            .find(query)
+            .toArray((err, res) => {
+            if(err) throw err;
+            callback(res)
         });
     }
 }
