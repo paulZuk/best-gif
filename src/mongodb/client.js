@@ -1,41 +1,44 @@
 const MongoClient = require('mongodb').MongoClient;
 
-const connectDB = (callback) => {
-    MongoClient.connect("mongodb://localhost:27017/MyDb", (err, database) => {
-        const dataBase = database.db('MyDb');
-        callback(dataBase);
-    });
-}
+const defaultConfig = {
+    dbName: 'MyDb',
+};
+class MondoClient {
+    constructor(config) {
+        const { 
+            dbName 
+        } = Object.assign({}, defaultConfig, config);
 
-const add = (collectionName, objectArray) => {
-    connectDB((db) => {
-        db.collection(collectionName, (err, coll) => {
+        this.dbName = dbName;
+        this.dataBase = null;
+    }
 
-            if (Array.isArray(objectArray)) {
-                objectArray.forEach(elem => coll.insert(elem));
+    init(callback) {
+        MongoClient.connect("mongodb://localhost:27017", (err, database) => {
+            if(err) {
+                throw err;
+            }
+            this.dataBase = database.db(this.dbName);
+            callback(this.dataBase);
+        });
+    }
+    getCollection(collectionName) {
+        return this.dataBase
+            .collection(collectionName)
+            .find()
+            .toArray();
+    }
+    add(collectionName, objectOrArray) {
+        this.dataBase.collection(collectionName, (err, coll) => {
+
+            if (Array.isArray(objectOrArray)) {
+                coll.insertMany(objectOrArray);
                 return;
             }
             
-            coll.insert(objectArray);
+            coll.insertOne(objectOrArray);
         });
-    })
- 
+    }
 }
 
-const getCollection = collectionName => {
-    connectDB((db) => {
-        db.collection(collectionName, function (err, collection) {
-        
-            collection.find().toArray(function(err, items) {
-               if(err) throw err;    
-               console.log(items);            
-           });
-           
-       });
-    });
-}
-
-module.exports = {
-    add,
-    getCollection,
-};
+module.exports = MondoClient;

@@ -1,31 +1,33 @@
 const { WebClient } = require('@slack/web-api');
+const token = process.env.SLACK_TOKEN;
 
-const web = new WebClient(process.env.SLACK_TOKEN);
+class SlackWebClient {
+    constructor(config) {
+        this.web = new WebClient(config.token);
+    }
 
-export const getUserID = () => {
-    return web.auth.test()
-        .then(response => response.user_id);
-};
-
-export const getChannelId = (channelName) => {
-    return web.channels.list()
-        .then(list => list.channels
-            .find(elem => elem.name === channelName)
-            .id
-        );
+    getUserID() {
+        return this.web.auth.test()
+            .then(response => response.user_id);
+    };
+    
+    getChannelId(channelName) {
+        return this.web.channels.list()
+            .then(list => list.channels
+                .find(elem => elem.name === channelName)
+                .id
+            );
+    }
+    
+    postMessage(channelName, message) {
+        this.getChannelId(channelName)
+            .then(id => {
+                this.web.chat.postMessage({
+                    channel: id,
+                    text: message,
+                });
+            })
+    };
 }
 
-export const postMessage = (channelName, message) => {
-    getChannelId(channelName).then(id => {
-        web.chat.postMessage({
-            channel: id,
-            text: message,
-        });
-    })
-};
-
-module.exports = {
-    getUserID,
-    getChannelId,
-    postMessage,
-}
+module.exports = SlackWebClient;
