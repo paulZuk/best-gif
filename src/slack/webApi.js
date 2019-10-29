@@ -18,12 +18,12 @@ class SlackWeb {
             );
     }
     
-    postMessage(channelName, message) {
+    postMessage(channelName, messageData) {
         this.getChannelId(channelName)
             .then(id => {
                 this.web.chat.postMessage({
                     channel: id,
-                    text: message,
+                    ...messageData,
                 });
             })
     };
